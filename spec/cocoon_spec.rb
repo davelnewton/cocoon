@@ -295,6 +295,24 @@ describe Cocoon do
       it_behaves_like "a correctly rendered remove link", {class: 'remove_fields dynamic destroyed'}
     end
 
+    context "for an object that doesn't implement marked_for_destruction" do
+      before do
+        @unmarkable = Unmarkable.new
+        @form_obj_destroyed = double(:object => @unmarkable, :object_name => @unmarkable.class.name)
+        @html = @tester.link_to_remove_association('remove something', @form_obj_destroyed)
+      end
+
+      it "is rendered inside a input element" do
+        doc = Nokogiri::HTML(@html)
+        removed = doc.at('input')
+        removed.attribute('id').value.should == "Unmarkable__destroy"
+        removed.attribute('name').value.should == "Unmarkable[_destroy]"
+        # TODO Danger Danger removed.attribute('value').value.should == "true"
+      end
+
+      it_behaves_like "a correctly rendered remove link", {class: 'remove_fields dynamic'}
+    end
+
     context "with a block" do
       context "the block gives the name" do
         before do
@@ -328,7 +346,7 @@ describe Cocoon do
         before do
           @html = @tester.link_to_remove_association('remove something', @form_obj, { wrapper_class: 'another-class' })
         end
-  
+
         it_behaves_like "a correctly rendered remove link", { extra_attributes: { 'data-wrapper-class' => 'another-class' } }
       end
     end

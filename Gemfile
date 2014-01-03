@@ -1,6 +1,5 @@
 source "http://rubygems.org"
 
-
 group :development, :test do
   gem "rails", ">=4.0.0"
   gem "sqlite3"
@@ -10,6 +9,7 @@ group :development, :test do
   gem "rspec",       ">= 2.8.0"
   gem "actionpack",  ">=4.0.0"
   gem "simplecov", :require => false
+  gem "mongoid", "~> 4.0alpha"
 
   gem 'nokogiri'
 
@@ -22,10 +22,4 @@ group :development, :test do
     gem 'racc'
     gem 'rubinius-developer_tools'
   end
-
 end
-
-
-# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-# gem 'ruby-debug'
-# gem 'ruby-debug19'
