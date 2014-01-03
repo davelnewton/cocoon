@@ -7,6 +7,8 @@ spec/dummy/tmp/
 .rvmrc
 .idea
 coverage/
- 
+
 Gemfile.lock
 
+.ruby-gemset
+.ruby-version

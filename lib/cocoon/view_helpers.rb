@@ -12,7 +12,7 @@ module Cocoon
     # - *f* : the form this link should be placed in
     # - *html_options*:  html options to be passed to link_to (see <tt>link_to</tt>)
     # - *&block*:        the output of the block will be show in the link, see <tt>link_to</tt>
-    
+
     def link_to_remove_association(*args, &block)
       if block_given?
         f            = args.first
@@ -29,7 +29,7 @@ module Cocoon
         classes = []
         classes << "remove_fields"
         classes << (is_dynamic ? 'dynamic' : 'existing')
-        classes << 'destroyed' if f.object.marked_for_destruction?
+        classes << 'destroyed' if markable_and_marked?(f.object)
         html_options[:class] = [html_options[:class], classes.join(' ')].compact.join(' ')
 
         wrapper_class = html_options.delete(:wrapper_class)
@@ -37,6 +37,10 @@ module Cocoon
 
         hidden_field_tag("#{f.object_name}[_destroy]", f.object._destroy) + link_to(name, '#', html_options)
       end
+    end
+
+    def markable_and_marked?(obj)
+      obj.respond_to?(:marked_for_destruction?) && obj.marked_for_destruction?
     end
 
     # :nodoc:
@@ -60,7 +64,7 @@ module Cocoon
     #              - *:locals*     : the locals hash in the :render_options is handed to the partial
     #          - *:partial*        : explicitly override the default partial name
     #          - *:wrap_object*    : a proc that will allow to wrap your object, especially suited when using
-    #                                decorators, or if you want special initialisation   
+    #                                decorators, or if you want special initialisation
     #          - *:form_name*      : the parameter for the form in the nested form partial. Default `f`.
     #          - *:count*          : Count of how many objects will be added on a single click. Default `1`.
     # - *&block*:        see <tt>link_to</tt>
@@ -93,7 +97,7 @@ module Cocoon
         new_object = wrap_object.call(new_object) if wrap_object.respond_to?(:call)
 
         html_options[:'data-association-insertion-template'] = CGI.escapeHTML(render_association(association, f, new_object, form_parameter_name, render_options, override_partial)).html_safe
-        
+
         html_options[:'data-count'] = count if count > 0
 
         link_to(name, '#', html_options)
